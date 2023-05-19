@@ -1,0 +1,82 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Chartjs";
+}
+
+<p>
+    <div class="row">
+        <div class="col-1">
+            <label>Chart type</label>
+        </div>
+        <div class="col-2">
+            <select id="ChartType" class="form-control" style="width:150px">
+                <option selected>select chart type</option>
+                <option>bar</option>
+                <option>pie</option>
+                <option>line</option>
+                <option>doughnut</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <input id="ID" value="show graph" type="button" />
+        </div>
+    </div>
+</p>
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>    
+</div>
+
+@section Scripts{
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+        
+    $(function () {
+        $("#ID").click(function(){
+            var chartType = $("#ChartType").val();
+           
+            $.ajax({
+                type:"POST",
+                url: "/Chartjs/GetMoviesData",
+                data:"",
+                contextType: "application/json; charset-UTF-8",
+                dataType: "json",
+                success: OnSuccessResult,
+                error: onerror
+            });
+            function OnSuccessResult (data){
+                var _data = data;
+                var _chartLabel = _data[0];
+                var _chartData = _data[1];
+                var BarColor =  ["red", "blue", "brown", "yellow", "green" ]
+
+                new Chart("myChart",
+                {
+                    type: chartType,
+                    data: {
+                        labels: _chartLabel,
+                        datasets : [{
+                            backgroundColor : BarColor,
+                            data: _chartData
+                        }]
+                    }
+                }); 
+
+            }
+            function OnError (err){
+
+            }
+        });
+    });
+        
+    </script>
+    
+}
+
+
